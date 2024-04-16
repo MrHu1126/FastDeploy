@@ -136,6 +136,11 @@ void FD_C_DestroyDetectionResult(
     delete[] fd_c_detection_result->boxes.data[i].data;
   }
   delete[] fd_c_detection_result->boxes.data;
+  //delete rotated_boxes
+  for (size_t i = 0; i < fd_c_detection_result->rotated_boxes.size; i++) {
+    delete[] fd_c_detection_result->rotated_boxes.data[i].data;
+  }
+  delete[] fd_c_detection_result->rotated_boxes.data;
   // delete scores
   delete[] fd_c_detection_result->scores.data;
   // delete label_ids
@@ -164,6 +169,22 @@ void FD_C_DetectionResultWrapperToCResult(
     for (size_t j = 0; j < boxes_coordinate_dim; j++) {
       fd_c_detection_result->boxes.data[i].data[j] =
           detection_result->boxes[i][j];
+    }
+  }
+  // copy rotated_boxes
+  const int rotated_boxes_coordinate_dim = 8;
+  fd_c_detection_result->rotated_boxes.size =
+      detection_result->rotated_boxes.size();
+  fd_c_detection_result->rotated_boxes.data =
+      new FD_C_OneDimArrayFloat[fd_c_detection_result->rotated_boxes.size];
+  for (size_t i = 0; i < detection_result->rotated_boxes.size(); i++) {
+    fd_c_detection_result->rotated_boxes.data[i].size =
+        rotated_boxes_coordinate_dim;
+    fd_c_detection_result->rotated_boxes.data[i].data =
+        new float[rotated_boxes_coordinate_dim];
+    for (size_t j = 0; j < rotated_boxes_coordinate_dim; j++) {
+      fd_c_detection_result->rotated_boxes.data[i].data[j] =
+          detection_result->rotated_boxes[i][j];
     }
   }
   // copy scores
