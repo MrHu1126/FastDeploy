@@ -52,6 +52,19 @@ void FD_C_DestroyClassifyResult(
   delete fd_c_classify_result;
 }
 
+FD_C_OneDimClassifyResult* FD_C_CreateOneDimClassifyResult() {
+  FD_C_OneDimClassifyResult* fd_c_one_dim_classify_result = new FD_C_OneDimClassifyResult();
+  return fd_c_one_dim_classify_result;
+}
+
+void FD_C_DestroyOneDimClassifyResult(
+    __fd_take FD_C_OneDimClassifyResult* fd_c_one_dim_classify_result) {
+  for (int i = 0; i < fd_c_one_dim_classify_result->size; i++) {
+    FD_C_DestroyClassifyResult(fd_c_one_dim_classify_result->data + i);
+  }
+  delete[] fd_c_one_dim_classify_result->data;
+}
+
 void FD_C_ClassifyResultWrapperToCResult(
     __fd_keep FD_C_ClassifyResultWrapper* fd_c_classify_result_wrapper,
     __fd_keep FD_C_ClassifyResult* fd_c_classify_result_data) {

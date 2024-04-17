@@ -128,6 +128,21 @@ FD_C_CreateClassifyResult();
 FASTDEPLOY_CAPI_EXPORT extern void
 FD_C_DestroyClassifyResult(__fd_take FD_C_ClassifyResult* fd_c_classify_result);
 
+/** \brief Create a new FD_C_OneDimClassifyResult object
+ *
+ * \return Return a pointer to FD_C_OneDimClassifyResult object
+ */
+FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_OneDimClassifyResult*
+FD_C_CreateOneDimClassifyResult();
+
+/** \brief Destroy a FD_C_OneDimClassifyResult object
+ *
+ * \param[in] fd_c_one_dim_classify_result pointer to FD_C_OneDimClassifyResult object
+ */
+
+FASTDEPLOY_CAPI_EXPORT extern void
+FD_C_DestroyOneDimClassifyResult(__fd_take FD_C_OneDimClassifyResult* fd_c_one_dim_classify_result);
+
 /** \brief Get a FD_C_ClassifyResult object from FD_C_ClassifyResultWrapper object
  *
  * \param[in] fd_c_classify_result_wrapper pointer to FD_C_ClassifyResultWrapper object
