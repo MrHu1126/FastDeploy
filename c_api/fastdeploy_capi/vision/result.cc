@@ -344,6 +344,18 @@ void FD_C_DestroyOCRResult(__fd_take FD_C_OCRResult* fd_c_ocr_result) {
   delete[] fd_c_ocr_result->cls_scores.data;
   // delete cls_labels
   delete[] fd_c_ocr_result->cls_labels.data;
+  // delete table_boxes
+  for (size_t i = 0; i < fd_c_ocr_result->table_boxes.size; i++) {
+    delete[] fd_c_ocr_result->table_boxes.data[i].data;
+  }
+  delete[] fd_c_ocr_result->table_boxes.data;
+  // delete table_structure
+  for (size_t i = 0; i < fd_c_ocr_result->table_structure.size; i++) {
+    delete[] fd_c_ocr_result->table_structure.data[i].data;
+  }
+  delete[] fd_c_ocr_result->table_structure.data;
+  // delete table_html
+  delete[] fd_c_ocr_result->table_html.data;
   delete fd_c_ocr_result;
 }
 
