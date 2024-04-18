@@ -371,8 +371,7 @@ void FD_C_OCRResultWrapperToCResult(
     fd_c_ocr_result->text.data[i].size = ocr_result->text[i].length();
     fd_c_ocr_result->text.data[i].data =
         new char[ocr_result->text[i].length() + 1];
-    strncpy(fd_c_ocr_result->text.data[i].data, ocr_result->text[i].c_str(),
-            ocr_result->text[i].length());
+    strcpy(fd_c_ocr_result->text.data[i].data, ocr_result->text[i].c_str());
   }
 
   // copy rec_scores
@@ -393,6 +392,38 @@ void FD_C_OCRResultWrapperToCResult(
       new int32_t[fd_c_ocr_result->cls_labels.size];
   memcpy(fd_c_ocr_result->cls_labels.data, ocr_result->cls_labels.data(),
          sizeof(int32_t) * fd_c_ocr_result->cls_labels.size);
+
+  // copy table boxes
+  fd_c_ocr_result->table_boxes.size = ocr_result->table_boxes.size();
+  fd_c_ocr_result->table_boxes.data =
+      new FD_C_OneDimArrayInt32[fd_c_ocr_result->table_boxes.size];
+  for (size_t i = 0; i < ocr_result->table_boxes.size(); i++) {
+    fd_c_ocr_result->table_boxes.data[i].size = boxes_coordinate_dim;
+    fd_c_ocr_result->table_boxes.data[i].data = new int[boxes_coordinate_dim];
+    for (size_t j = 0; j < boxes_coordinate_dim; j++) {
+      fd_c_ocr_result->table_boxes.data[i].data[j] =
+          ocr_result->table_boxes[i][j];
+    }
+  }
+
+  // copy table_structure
+  fd_c_ocr_result->table_structure.size = ocr_result->table_structure.size();
+  fd_c_ocr_result->table_structure.data =
+      new FD_C_Cstr[fd_c_ocr_result->table_structure.size];
+  for (size_t i = 0; i < ocr_result->table_structure.size(); i++) {
+    fd_c_ocr_result->table_structure.data[i].size =
+        ocr_result->text[i].length();
+    fd_c_ocr_result->table_structure.data[i].data =
+        new char[ocr_result->table_structure[i].length() + 1];
+    strcpy(fd_c_ocr_result->table_structure.data[i].data,
+           ocr_result->table_structure[i].c_str());
+  }
+
+  // copy table_html
+  fd_c_ocr_result->table_html.data =
+      new char[ocr_result->table_html.length() + 1];
+  strcpy(fd_c_ocr_result->table_html.data, ocr_result->table_html.c_str());
+
   // copy type
   fd_c_ocr_result->type = static_cast<FD_C_ResultType>(ocr_result->type);
   return;
