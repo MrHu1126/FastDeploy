@@ -359,6 +359,20 @@ void FD_C_DestroyOCRResult(__fd_take FD_C_OCRResult* fd_c_ocr_result) {
   delete fd_c_ocr_result;
 }
 
+FD_C_OneDimOCRResult* FD_C_CreateOneDimOCRResult() {
+  FD_C_OneDimOCRResult* fd_c_one_dim_ocr_result =
+      new FD_C_OneDimOCRResult();
+  return fd_c_one_dim_ocr_result;
+}
+
+void FD_C_DestroyOneDimOCRResult(
+    __fd_take FD_C_OneDimOCRResult* fd_c_one_dim_ocr_result) {
+  for (int i = 0; i < fd_c_one_dim_ocr_result->size; i++) {
+    FD_C_DestroyOCRResult(fd_c_one_dim_ocr_result->data + i);
+  }
+  delete[] fd_c_one_dim_ocr_result->data;
+}
+
 void FD_C_OCRResultWrapperToCResult(
     __fd_keep FD_C_OCRResultWrapper* fd_c_ocr_result_wrapper,
     __fd_keep FD_C_OCRResult* fd_c_ocr_result) {

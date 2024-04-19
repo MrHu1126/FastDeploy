@@ -276,11 +276,25 @@ FD_C_CreateOCRResult();
 FASTDEPLOY_CAPI_EXPORT extern void FD_C_DestroyOCRResult(
     __fd_take FD_C_OCRResult* fd_c_ocr_result);
 
+/** \brief Create a new FD_C_OneDimOCRResult object
+ *
+ * \return Return a pointer to FD_C_OneDimOCRResult object
+ */
+FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_OneDimOCRResult* FD_C_CreateOneDimOCRResult();
+
+/** \brief Destroy a FD_C_OneDimOCRResult object
+ *
+ * \param[in] fd_c_one_dim_ocr_result pointer to FD_C_OneDimOCRResult object
+ */
+
+FASTDEPLOY_CAPI_EXPORT extern void
+FD_C_DestroyOneDimOCRResult(__fd_take FD_C_OneDimOCRResult* fd_c_one_dim_ocr_result);
 /** \brief Get a FD_C_OCRResult object from FD_C_OCRResultWrapper object
  *
  * \param[in] fd_c_ocr_result_wrapper pointer to FD_C_OCRResultWrapper object
  * \param[out]  fd_c_ocr_result pointer to FD_C_OCRResult object used to store data
  */
+
 FASTDEPLOY_CAPI_EXPORT extern __fd_give void
 FD_C_OCRResultWrapperToCResult(
     __fd_keep FD_C_OCRResultWrapper* fd_c_ocr_result_wrapper,
