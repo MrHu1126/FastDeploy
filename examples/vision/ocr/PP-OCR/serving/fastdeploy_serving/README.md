@@ -65,7 +65,7 @@ wget https://gitee.com/paddlepaddle/PaddleOCR/raw/release/2.6/doc/imgs/12.jpg
 
 # x.y.z为镜像版本号，需参照serving文档替换为数字
 docker pull registry.baidubce.com/paddlepaddle/fastdeploy:x.y.z-gpu-cuda11.4-trt8.4-21.10
-docker run -dit --net=host --name fastdeploy --shm-size="1g" -v $PWD:/ocr_serving registry.baidubce.com/paddlepaddle/fastdeploy:x.y.z-gpu-cuda11.4-trt8.4-21.10 bash
+docker run --gpus all -dit --net=host --name fastdeploy --shm-size="1g" -v $PWD:/ocr_serving registry.baidubce.com/paddlepaddle/fastdeploy:x.y.z-gpu-cuda11.4-trt8.5-21.10 bash
 docker exec -it -u root fastdeploy bash
 ```
 
@@ -81,7 +81,7 @@ fastdeployserver --model-repository=/ocr_serving/models
 ```
 
 参数:
-  - `model-repository`(required): 整套模型streaming_pp_tts存放的路径.
+  - `model-repository`(required): 整套模型PP-OCRv3存放的路径.
   - `http-port`(optional): HTTP服务的端口号. 默认: `8000`. 本示例中未使用该端口.
   - `grpc-port`(optional): GRPC服务的端口号. 默认: `8001`.
   - `metrics-port`(optional): 服务端指标的端口号. 默认: `8002`. 本示例中未使用该端口.
