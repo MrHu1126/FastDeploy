@@ -35,6 +35,8 @@
 #include "fastdeploy/vision/ocr/ppocr/ppocr_v4.h"
 #include "fastdeploy/vision/ocr/ppocr/ppstructurev2_table.h"
 #include "fastdeploy/vision/segmentation/ppseg/model.h"
+#include "fastdeploy/vision/matting/ppmatting/ppmatting.h"
+
 
 #define DEFINE_RESULT_WRAPPER_STRUCT(typename, varname) typedef struct FD_C_##typename##Wrapper { \
   std::unique_ptr<fastdeploy::vision::typename> varname; \
@@ -61,6 +63,10 @@
   std::unique_ptr<fastdeploy::vision::segmentation::typename> varname; \
 } FD_C_##typename##Wrapper
 
+#define DEFINE_MATTING_MODEL_WRAPPER_STRUCT(typename, varname)  typedef struct FD_C_##typename##Wrapper { \
+  std::unique_ptr<fastdeploy::vision::matting::typename> varname; \
+} FD_C_##typename##Wrapper
+
 // -------------  belows are wrapper struct define --------------------- //
 
 // Results:
@@ -77,6 +83,9 @@ DEFINE_RESULT_WRAPPER_STRUCT(OCRResult, ocr_result);
 
 // Segmentation Result
 DEFINE_RESULT_WRAPPER_STRUCT(SegmentationResult, segmentation_result);
+
+// Matting Result
+DEFINE_RESULT_WRAPPER_STRUCT(MattingResult, matting_result);
 
 // Models:
 
@@ -199,6 +208,11 @@ DEFINE_PIPELINE_MODEL_WRAPPER_STRUCT(PPStructureV2Table, ppstructurev2table_mode
 // PaddleSegModel
 DEFINE_SEGMENTATION_MODEL_WRAPPER_STRUCT(PaddleSegModel, segmentation_model);
 
+// Matting models
+
+// PPMatting
+DEFINE_MATTING_MODEL_WRAPPER_STRUCT(PPMatting, matting_model);
+
 // -------------  belows are function declaration for get ptr from wrapper --------------------- //
 
 #define DECLARE_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(typename, varname) std::unique_ptr<fastdeploy::vision::typename>& \
@@ -226,6 +240,9 @@ FD_C_CheckAndConvert##typename##Wrapper( \
 FD_C_CheckAndConvert##typename##Wrapper( \
     FD_C_##typename##Wrapper* varname)
 
+#define DECLARE_MATTING_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(typename, varname) std::unique_ptr<fastdeploy::vision::matting::typename>& \
+FD_C_CheckAndConvert##typename##Wrapper( \
+    FD_C_##typename##Wrapper* varname)
 
 namespace fastdeploy {
 
@@ -243,10 +260,13 @@ DECLARE_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(DetectionResult,
 DECLARE_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(OCRResult,
                                              fd_ocr_result_wrapper);
 
-// SegementationResult
+// SegmentationResult
 DECLARE_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(SegmentationResult,
                                              fd_segmentation_result_wrapper);
 
+// MattingResult
+DECLARE_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(MattingResult,
+                                             fd_Matting_result_wrapper);
 
 // Models:
 
@@ -416,6 +436,12 @@ DECLARE_PIPELINE_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(PPStructureV2Table, fd_ppst
 DECLARE_SEGMENTATION_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(
     PaddleSegModel, fd_paddleseg_model_wrapper);
 
+// Matting models
+
+// PPMatting
+DECLARE_MATTING_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(
+    PPMatting, fd_ppmatting_wrapper);
+
 }  // namespace fastdeploy
 
 
@@ -461,6 +487,14 @@ FD_C_CheckAndConvert##typename##Wrapper( \
 }
 
 #define DECL_AND_IMPLEMENT_SEGMENTATION_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(typename, var_wrapper_name, var_ptr_name) std::unique_ptr<fastdeploy::vision::segmentation::typename>& \
+FD_C_CheckAndConvert##typename##Wrapper( \
+    FD_C_##typename##Wrapper* var_wrapper_name) { \
+  FDASSERT(var_wrapper_name != nullptr, \
+           "The pointer of " #var_wrapper_name " shouldn't be nullptr."); \
+  return var_wrapper_name->var_ptr_name; \
+}
+
+#define DECL_AND_IMPLEMENT_MATTING_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(typename, var_wrapper_name, var_ptr_name) std::unique_ptr<fastdeploy::vision::matting::typename>& \
 FD_C_CheckAndConvert##typename##Wrapper( \
     FD_C_##typename##Wrapper* var_wrapper_name) { \
   FDASSERT(var_wrapper_name != nullptr, \

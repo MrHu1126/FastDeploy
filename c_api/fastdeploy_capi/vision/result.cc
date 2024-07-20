@@ -541,6 +541,128 @@ void FD_C_SegmentationResultStr(
   return;
 }
 
+// Matting Results
+
+FD_C_MattingResultWrapper* FD_C_CreateMattingResultWrapper() {
+  FD_C_MattingResultWrapper* fd_c_matting_result_wrapper =
+      new FD_C_MattingResultWrapper();
+  fd_c_matting_result_wrapper->matting_result =
+      std::unique_ptr<fastdeploy::vision::MattingResult>(
+          new fastdeploy::vision::MattingResult());
+  return fd_c_matting_result_wrapper;
+}
+
+void FD_C_DestroyMattingResultWrapper(
+    __fd_take FD_C_MattingResultWrapper*
+        fd_c_matting_result_wrapper) {
+  delete fd_c_matting_result_wrapper;
+}
+
+FD_C_MattingResult* FD_C_CreatePPMattingResult() {
+  FD_C_MattingResult* fd_c_matting_result =
+      new FD_C_MattingResult();
+  return fd_c_matting_result;
+}
+
+void FD_C_DestroyPPMattingResult(
+    __fd_take FD_C_MattingResult* fd_c_matting_result) {
+  if (fd_c_matting_result == nullptr) return;
+  // delete alpha
+  delete[] fd_c_matting_result->alpha.data;
+  // delete foreground
+  delete[] fd_c_matting_result->foreground.data;
+  // delete shape
+  delete[] fd_c_matting_result->shape.data;
+  delete fd_c_matting_result;
+}
+
+void FD_C_MattingResultWrapperToCResult(
+    __fd_keep FD_C_MattingResultWrapper* fd_c_matting_result_wrapper,
+    __fd_keep FD_C_MattingResult* fd_c_matting_result) {
+  auto& matting_result = CHECK_AND_CONVERT_FD_TYPE(
+      MattingResultWrapper, fd_c_matting_result_wrapper);
+
+  // copy alpha
+  fd_c_matting_result->alpha.size =
+      matting_result->alpha.size();
+  fd_c_matting_result->alpha.data =
+      new float[fd_c_matting_result->alpha.size];
+  memcpy(fd_c_matting_result->alpha.data,
+         matting_result->alpha.data(),
+         sizeof(float) * fd_c_matting_result->alpha.size);
+  // copy foreground
+  fd_c_matting_result->foreground.size =
+      matting_result->foreground.size();
+  fd_c_matting_result->foreground.data =
+      new float[fd_c_matting_result->foreground.size];
+  memcpy(fd_c_matting_result->foreground.data,
+         matting_result->foreground.data(),
+         sizeof(float) * fd_c_matting_result->foreground.size);
+  // copy shape
+  fd_c_matting_result->shape.size = matting_result->shape.size();
+  fd_c_matting_result->shape.data =
+      new int64_t[fd_c_matting_result->shape.size];
+  memcpy(fd_c_matting_result->shape.data,
+         matting_result->shape.data(),
+         sizeof(int64_t) * fd_c_matting_result->shape.size);
+  // copy contain_foreground
+  fd_c_matting_result->contain_foreground =
+      matting_result->contain_foreground;
+  // copy type
+  fd_c_matting_result->type =
+      static_cast<FD_C_ResultType>(matting_result->type);
+  return;
+}
+
+FD_C_MattingResultWrapper* FD_C_CreateMattingResultWrapperFromCResult(
+    __fd_keep FD_C_MattingResult* fd_c_matting_result) {
+  FD_C_MattingResultWrapper* fd_c_matting_result_wrapper =
+      FD_C_CreateMattingResultWrapper();
+  auto& matting_result = CHECK_AND_CONVERT_FD_TYPE(
+      MattingResultWrapper, fd_c_matting_result_wrapper);
+
+  // copy alpha
+  matting_result->alpha.resize(
+      fd_c_matting_result->alpha.size);
+  memcpy(matting_result->alpha.data(),
+         fd_c_matting_result->alpha.data,
+         sizeof(float) * fd_c_matting_result->alpha.size);
+
+  // copy foreground
+  matting_result->foreground.resize(
+      fd_c_matting_result->foreground.size);
+  memcpy(matting_result->foreground.data(),
+         fd_c_matting_result->foreground.data,
+         sizeof(float) * fd_c_matting_result->foreground.size);
+
+  // copy shape
+  matting_result->shape.resize(fd_c_matting_result->shape.size);
+  memcpy(matting_result->shape.data(),
+         fd_c_matting_result->shape.data,
+         sizeof(int64_t) * fd_c_matting_result->shape.size);
+
+  // copy contain_score_map
+  matting_result->contain_foreground =
+      fd_c_matting_result->contain_foreground;
+  // copy type
+  matting_result->type = static_cast<fastdeploy::vision::ResultType>(
+      fd_c_matting_result->type);
+
+  return fd_c_matting_result_wrapper;
+}
+
+void FD_C_PPMattingResultStr(
+    FD_C_MattingResult* fd_c_matting_result, char* str_buffer) {
+  FD_C_MattingResultWrapper* fd_c_matting_result_wrapper =
+      FD_C_CreateMattingResultWrapperFromCResult(fd_c_matting_result);
+  auto& matting_result = CHECK_AND_CONVERT_FD_TYPE(
+      MattingResultWrapper, fd_c_matting_result_wrapper);
+  std::string information = matting_result->Str();
+  std::strcpy(str_buffer, information.c_str());
+  FD_C_DestroyMattingResultWrapper(fd_c_matting_result_wrapper);
+  return;
+}
+
 #ifdef __cplusplus
 }
 #endif
