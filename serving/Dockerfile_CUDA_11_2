@@ -76,7 +76,7 @@ COPY serving/build/libtriton_fastdeploy.so /opt/tritonserver/backends/fastdeploy
 RUN mv /opt/tritonserver/bin/tritonserver /opt/tritonserver/bin/fastdeployserver
 
 # copy compiled fastdeploy_install into image
-COPY build/fastdeploy_install/* /opt/fastdeploy/
+COPY build/fastdeploy_install /opt/fastdeploy/
 
 # Set environment variable
 ENV LD_LIBRARY_PATH="/opt/fastdeploy/lib:/opt/fastdeploy/third_libs/install/onnxruntime/lib:/opt/fastdeploy/third_libs/install/paddle2onnx/lib:/opt/fastdeploy/third_libs/install/paddle_inference/paddle/lib:/opt/fastdeploy/third_libs/install/openvino/runtime/lib/:/opt/fastdeploy/third_libs/install/tensorrt/lib/:/opt/fastdeploy/third_libs/install/opencv/lib64/:$LD_LIBRARY_PATH"
