@@ -292,7 +292,7 @@ cv::Mat Visualize::VisDetection(const cv::Mat& im,
     return im;
   }
   FDWARNING << "DEPRECATED: fastdeploy::vision::Visualize::VisDetection is "
-               "deprecated, please use fastdeploy::vision:VisDetection "
+               "deprecated, please use fastdeploy::vision::VisDetection "
                "function instead."
             << std::endl;
   if (result.contain_masks) {
