@@ -6,10 +6,11 @@ COPY ./client/ /opt/output/client/
 
 ENV LD_LIBRARY_PATH="/usr/local/cuda-12.3/compat/:$LD_LIBRARY_PATH"
 
+RUN apt update && apt install net-tools
+
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN python3 -m pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu123/ \
-    && python3 -m pip install paddlenlp==3.0.0b0 \
-    && python3 -m pip install --no-cache-dir sentencepiece pycryptodome tritonclient[all]==2.41.1
+    && python3 -m pip install paddlenlp==3.0.0b0
 
 RUN git clone https://gitee.com/paddlepaddle/PaddleNLP.git && cd PaddleNLP/csrc \
     && python3 setup_cuda.py build && python3 setup_cuda.py install --user \
@@ -32,3 +33,4 @@ RUN cd /opt/output/Serving/ \
 
 ENV http_proxy=""
 ENV https_proxy=""
+ENV TZ=Asia/Shanghai
