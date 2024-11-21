@@ -21,6 +21,7 @@
 #include "fastdeploy_capi/vision/detection/contrib/yolo/model.h"
 #include "fastdeploy_capi/vision/ocr/ppocr/model.h"
 #include "fastdeploy_capi/vision/segmentation/ppseg/model.h"
+#include "fastdeploy_capi/vision/matting/ppmatting/model.h"
 #include "fastdeploy_capi/vision/result.h"
 #include "fastdeploy_capi/vision/visualize.h"
 #endif

@@ -17,6 +17,7 @@
 #include "fastdeploy_capi/core/fd_common.h"
 #include "fastdeploy_capi/core/fd_type.h"
 #include "fastdeploy_capi/vision/result.h"
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -99,6 +100,35 @@ FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_Mat FD_C_VisOcr(FD_C_Mat im, FD_C_O
 FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_Mat FD_C_VisSegmentation(FD_C_Mat im,
                                         FD_C_SegmentationResult* result,
                                         float weight);
+
+
+/** \brief Show the visualized results for matting models
+ *
+ * \param[in] im the input image data, comes from cv::imread(), is a 3-D array with layout HWC, BGR format
+ * \param[in] result the result produced by model
+ * \param[in] transparent_background if transparent_background==true, the background will with transparent color
+ * \param[in] transparent_threshold since the alpha value in MattringResult is a float between [0, 1], transparent_threshold is used to filter background pixel
+ * \param[in] remove_small_connected_area if remove_small_connected_area==true, the visualized result will not include the small connected areas
+ * \return cv::Mat type stores the visualized results
+ */
+FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_Mat FD_C_VisMatting(FD_C_Mat im,
+                                        FD_C_MattingResult* result,
+                                        bool transparent_background,
+                                        float transparent_threshold,
+                                        bool remove_small_connected_area);
+
+/** \brief Swap the image background with MattingResult
+ *
+ * \param[in] im the input image data, comes from cv::imread(), is a 3-D array with layout HWC, BGR format
+ * \param[in] background the background image data, comes from cv::imread(), is a 3-D array with layout HWC, BGR format
+ * \param[in] result the MattingResult produced by model
+ * \param[in] remove_small_connected_area if remove_small_connected_area==true, the visualized result will not include the small connected areas
+ * \return cv::Mat type stores the visualized results
+ */
+FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_Mat FD_C_SwapBackground(FD_C_Mat im,
+                                        FD_C_Mat background,
+                                        FD_C_MattingResult* result,
+                                        bool remove_small_connected_area);
 
 
 #ifdef __cplusplus

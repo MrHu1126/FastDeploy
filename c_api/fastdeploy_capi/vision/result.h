@@ -21,6 +21,7 @@ typedef struct FD_C_ClassifyResultWrapper FD_C_ClassifyResultWrapper;
 typedef struct FD_C_DetectionResultWrapper FD_C_DetectionResultWrapper;
 typedef struct FD_C_OCRResultWrapper FD_C_OCRResultWrapper;
 typedef struct FD_C_SegmentationResultWrapper FD_C_SegmentationResultWrapper;
+typedef struct FD_C_MattingResultWrapper FD_C_MattingResultWrapper;
 
 #ifdef __cplusplus
 extern "C" {
@@ -94,6 +95,18 @@ typedef struct FD_C_OneDimSegmentationResult {
   FD_C_SegmentationResult* data;
 } FD_C_OneDimSegmentationResult;
 
+typedef struct FD_C_MattingResult {
+  FD_C_OneDimArrayFloat alpha;
+  FD_C_OneDimArrayFloat foreground;
+  FD_C_OneDimArrayInt64 shape;
+  FD_C_Bool contain_foreground;
+  FD_C_ResultType type;
+} FD_C_MattingResult;
+
+typedef struct FD_C_OneDimPPMattingResult {
+  size_t size;
+  FD_C_MattingResult* data;
+} FD_C_OneDimPPMattingResult;
 
 // Classification Results
 
@@ -354,6 +367,70 @@ FD_C_CreateSegmentationResultWrapperFromCResult(
 FASTDEPLOY_CAPI_EXPORT extern __fd_give void
 FD_C_SegmentationResultStr(
     __fd_keep FD_C_SegmentationResult* fd_c_segmentation_result, char* str_buffer);
+
+
+// Matting Results
+
+/** \brief Create a new FD_C_MattingResultWrapper object
+ *
+ * \return Return a pointer to FD_C_MattingResultWrapper object
+ */
+
+FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_MattingResultWrapper*
+FD_C_CreateMattingResultWrapper();
+
+/** \brief Destroy a FD_C_MattingResultWrapper object
+ *
+ * \param[in] fd_c_matting_result_wrapper pointer to FD_C_MattingResultWrapper object
+ */
+
+FASTDEPLOY_CAPI_EXPORT extern void FD_C_DestroyMattingResultWrapper(
+    __fd_take FD_C_MattingResultWrapper* fd_c_matting_result_wrapper);
+
+/** \brief Create a new FD_C_MattingResult object
+ *
+ * \return Return a pointer to FD_C_MattingResult object
+ */
+FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_MattingResult*
+FD_C_CreatePPMattingResult();
+
+/** \brief Destroy a FD_C_MattingResult object
+ *
+ * \param[in] fd_c_matting_result pointer to FD_C_MattingResult object
+ */
+
+FASTDEPLOY_CAPI_EXPORT extern void FD_C_DestroyPPMattingResult(
+    __fd_take FD_C_MattingResult* fd_c_matting_result);
+
+/** \brief Get a FD_C_MattingResult object from FD_C_MattingResultWrapper object
+ *
+ * \param[in] fd_c_matting_result_wrapper pointer to FD_C_MattingResultWrapper object
+ * \param[out]  fd_c_matting_result pointer to FD_C_MattingResult object used to store data
+ */
+FASTDEPLOY_CAPI_EXPORT extern __fd_give void
+FD_C_MattingResultWrapperToCResult(
+    __fd_keep FD_C_MattingResultWrapper* fd_c_matting_result_wrapper,
+    __fd_keep FD_C_MattingResult* fd_c_matting_result);
+
+/** \brief Create a new FD_C_MattingResultWrapper object from FD_C_MattingResult object
+ *
+ * \param[in] fd_c_matting_result pointer to FD_C_MattingResult object
+ * \return Return a pointer to FD_C_MattingResultWrapper object
+ */
+
+FASTDEPLOY_CAPI_EXPORT extern __fd_give FD_C_MattingResultWrapper*
+FD_C_CreateMattingResultWrapperFromCResult(
+    __fd_keep FD_C_MattingResult* fd_c_matting_result);
+
+/** \brief Print PPmattingResult formated information
+ *
+ * \param[in] fd_c_matting_result pointer to FD_C_MattingResult object
+ * \param[out] str_buffer used to store string
+ */
+
+FASTDEPLOY_CAPI_EXPORT extern __fd_give void
+FD_C_PPMattingResultStr(
+    __fd_keep FD_C_MattingResult* fd_c_matting_result, char* str_buffer);
 
 
 

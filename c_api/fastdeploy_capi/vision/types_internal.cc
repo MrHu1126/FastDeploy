@@ -35,6 +35,9 @@ DECL_AND_IMPLEMENT_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(OCRResult,
 DECL_AND_IMPLEMENT_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(
     SegmentationResult, fd_segmentation_result_wrapper, segmentation_result)
 
+// MattingResult
+DECL_AND_IMPLEMENT_RESULT_FUNC_FOR_GET_PTR_FROM_WRAPPER(
+    MattingResult, fd_matting_result_wrapper, matting_result)
 // Models:
 
 // Classification
@@ -189,6 +192,12 @@ DECL_AND_IMPLEMENT_PIPELINE_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(
 DECL_AND_IMPLEMENT_SEGMENTATION_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(
     PaddleSegModel, fd_paddleseg_model_wrapper, segmentation_model);
 
+// Matting models
+
+// PPMatting
+DECL_AND_IMPLEMENT_MATTING_MODEL_FUNC_FOR_GET_PTR_FROM_WRAPPER(
+    PPMatting, fd_ppmatting_wrapper, matting_model);
+    
 #endif
 
 }  // namespace fastdeploy

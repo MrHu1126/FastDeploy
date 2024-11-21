@@ -114,6 +114,42 @@ FD_C_Mat FD_C_VisSegmentation(FD_C_Mat im,
   return new cv::Mat(result);
 }
 
+FD_C_Mat FD_C_VisMatting(FD_C_Mat im,
+                            FD_C_MattingResult* fd_c_matting_result,
+                            bool transparent_background,
+                            float transparent_threshold,
+                            bool remove_small_connected_area) {
+    FD_C_MattingResultWrapper* fd_c_matting_result_wrapper =
+        FD_C_CreateMattingResultWrapperFromCResult(fd_c_matting_result);
+    auto& matting_result = CHECK_AND_CONVERT_FD_TYPE(
+        MattingResultWrapper, fd_c_matting_result_wrapper);
+    cv::Mat result = fastdeploy::vision::VisMatting(
+        *(reinterpret_cast<cv::Mat*>(im)),
+        *matting_result,
+        transparent_background,
+        transparent_threshold,
+        remove_small_connected_area);
+    FD_C_DestroyMattingResultWrapper(fd_c_matting_result_wrapper);
+    return new cv::Mat(result);
+}
+
+FD_C_Mat FD_C_SwapBackground(FD_C_Mat im,
+                                FD_C_Mat background,
+                                FD_C_MattingResult* fd_c_matting_result,
+                                bool remove_small_connected_area) {
+    FD_C_MattingResultWrapper* fd_c_matting_result_wrapper =
+        FD_C_CreateMattingResultWrapperFromCResult(fd_c_matting_result);
+    auto& matting_result = CHECK_AND_CONVERT_FD_TYPE(
+        MattingResultWrapper, fd_c_matting_result_wrapper);
+    cv::Mat result = fastdeploy::vision::SwapBackground(
+        *(reinterpret_cast<cv::Mat*>(im)),
+        *(reinterpret_cast<cv::Mat*>(background)),
+        *matting_result,
+        remove_small_connected_area);
+    FD_C_DestroyMattingResultWrapper(fd_c_matting_result_wrapper);
+    return new cv::Mat(result);
+}
+
 #ifdef __cplusplus
 }
 #endif
