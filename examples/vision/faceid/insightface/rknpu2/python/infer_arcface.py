@@ -46,10 +46,9 @@ def build_option(args):
 
 args = parse_arguments()
 
-runtime_option = fd.RuntimeOption()
-model = fd.vision.faceid.ArcFace(args.model, runtime_option=runtime_option)
+runtime_option = build_option(args)
+model = fd.vision.faceid.ArcFace(args.model, runtime_option=runtime_option, model_format=fd.ModelFormat.RKNN if args.device.lower() == "npu" else fd.ModelFormat.ONNX)
 if args.device.lower() == "npu":
-    runtime_option.use_rknpu2()
     model.preprocessor.disable_normalize()
     model.preprocessor.disable_permute()
 
