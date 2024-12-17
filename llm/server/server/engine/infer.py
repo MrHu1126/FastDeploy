@@ -47,6 +47,7 @@ class ModelRunner:
 
         self.config = Config()
         self.model_cfg = self.config.get_model_config()
+        self.is_speculate_decoding = self.model_cfg.get("speculate_method") is not None
         self.format_print_configuration()
 
         self.args.num_layers = self.get_value(self.model_cfg, ["num_hidden_layers", "num_layers"])
@@ -63,16 +64,16 @@ class ModelRunner:
         self.cache_kvs = {}
         self.init_inputs()
 
-        # whether use speculate decoding
-        if self.config.speculate_method is not None:
-            if self.config.speculate_method == "inference_with_reference":
+        if self.is_speculate_decoding:
+            logger.info(f'Using speculating decoding, method: {self.model_cfg["speculate_method"]}.')
+            if self.model_cfg["speculate_method"] == "inference_with_reference":
                 self.proposer = InferenceWithReferenceProposer(
                     self.model_cfg["speculate_max_draft_token_num"],
                     self.model_cfg["speculate_max_ngram_size"],
                     self.args.max_batch_size,
                     self.args.max_seq_len)
             else:
-                raise NotImplementedError(f'Not support {self.config.speculate_method}, only support inference_with_reference now.')
+                raise NotImplementedError(f'Not support {self.model_cfg["speculate_method"]}, only support inference_with_reference now.')
         else:
             self.proposer = None
 
@@ -261,7 +262,7 @@ class ModelRunner:
                             shape=[1], fill_value=self.free_list_len, dtype="int32")
 
         # speculate decoding input
-        if self.config.speculate_method is not None:
+        if self.is_speculate_decoding:
             self.share_inputs["accept_tokens"] = paddle.full(
                 shape=[self.args.max_batch_size, self.model_cfg["speculate_max_draft_token_num"] + 1], fill_value=0, dtype="int64"
             )
@@ -315,16 +316,15 @@ class ModelRunner:
             self.share_inputs["block_tables"][idx:idx + 1, :encoder_block_num] = np.array(
                                             task['block_tables'], dtype="int32")
 
-            if self.proposer is not None:
-                if self.config.speculate_method == "inference_with_reference":
-                    self.share_inputs["draft_tokens"][idx:idx + 1] = np.zeros([self.model_cfg["speculate_max_draft_token_num"] + 1])
-                    self.share_inputs["actual_draft_token_num"][idx:idx + 1] = np.array([self.model_cfg["speculate_max_draft_token_num"]])
+            if self.is_speculate_decoding:
+                self.share_inputs["draft_tokens"][idx:idx + 1] = np.zeros([self.model_cfg["speculate_max_draft_token_num"] + 1])
+                self.share_inputs["actual_draft_token_num"][idx:idx + 1] = np.array([self.model_cfg["speculate_max_draft_token_num"]])
 
     def step_cuda(self, seq_lens_this_time):
         """
         step cuda
         """
-        if self.config.speculate_method is None:
+        if not self.is_speculate_decoding:
             step_paddle(self.share_inputs['stop_flags'], seq_lens_this_time,
                         self.share_inputs['step_seq_lens_encoder'],
                         self.share_inputs['seq_lens_encoder'],
